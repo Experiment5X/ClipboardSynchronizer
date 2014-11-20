@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,7 +14,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-    ClipboardSynchronizer.cpp
+    ClipboardSynchronizer.cpp \
+    ClipboardData.cpp \
+    QMimeType.cpp
 
 HEADERS  += \
-    ClipboardSynchronizer.h
+    ClipboardSynchronizer.h \
+    ClipboardData.h \
+    QMimeType.h
