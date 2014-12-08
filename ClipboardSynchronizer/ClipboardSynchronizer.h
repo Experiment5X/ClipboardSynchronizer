@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QtNetwork/QTcpServer>
 #include <QtNetwork/QTcpSocket>
+#include <QtNetwork/QHostAddress>
 
 #include "ClipboardData.h"
 
@@ -19,14 +20,17 @@ public:
     QString hostName() const;
     void setHostName(const QString &hostName);
 
-    quint16 hostPort() const;
-    void setHostPort(const quint16 &hostPort);
+    quint16 port() const;
 
     void connectToHost();
+
+    void sendClipboardData(QByteArray &data);
 
 public slots:
     void onClipboardChanged(QClipboard::Mode mode);
     void onConnected();
+    void onNewConnection();
+    void onReadyRead();
 
 signals:
     void connected();
@@ -34,10 +38,13 @@ signals:
 private:
     QClipboard *m_clipboard;
     QTcpServer *m_server;
-    QTcpSocket *m_socket;
 
     QString m_hostName;
-    quint16 m_hostPort;
+    quint16 m_port;
+
+    bool m_justChangedClipboard = false;
+
+    QList<QTcpSocket*> m_connectedSockets;
 };
 
 #endif // CLIPBOARDSYNCHRONIZER_H

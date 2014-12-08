@@ -11,9 +11,6 @@ int main(int argc, char *argv[])
     qDebug() << "Waiting for clipboard changes...";
 
     ClipboardSynchronizer sync;
-    sync.setHostName("localhost");
-    sync.setHostPort(22);
-    sync.connectToHost();
 
     return a.exec();
 }
