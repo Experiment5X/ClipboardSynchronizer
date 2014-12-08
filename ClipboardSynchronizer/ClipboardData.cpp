@@ -1,6 +1,6 @@
 #include "ClipboardData.h"
 
-ClipboardData::ClipboardData(const QMimeData *mimeData)
+QByteArray MimeDataToRawData(const QMimeData *mimeData)
 {
     static const QMimeType types[] = { QMimeType::TEXT, QMimeType::HTML, QMimeType::URLS, QMimeType::IMAGE, QMimeType::COLOR };
 
@@ -17,17 +17,34 @@ ClipboardData::ClipboardData(const QMimeData *mimeData)
 
     // if nothing is on the clipboard then there is no data to store
     if (type == QMimeType::NONE)
-        return;
+        return QByteArray();
 
     // allocate enough memory for the data type indicator byte at the beginning and for the data itself
-    m_rawData.reserve(mimeData->data(QMimeTypeFormat(type)).size() + 1);
+    QByteArray rawData;
+    rawData.reserve(mimeData->data(QMimeTypeFormat(type)).size() + 1);
 
     // put the data into a raw buffer
-    m_rawData[0] = (int)type;
-    m_rawData.replace(1, m_rawData.length() - 1, mimeData->data(QMimeTypeFormat(type)));
+    rawData[0] = (int)type;
+    rawData.replace(1, rawData.length() - 1, mimeData->data(QMimeTypeFormat(type)));
+
+    return rawData;
 }
 
-QByteArray ClipboardData::rawData() const
+QMimeData* RawDataToMimeData(const QByteArray &byteArray)
 {
-    return m_rawData;
+    QMimeData *toReturn = new QMimeData;
+
+    if (byteArray.length() == 0)
+        return toReturn;
+
+    // get the type and verify it
+    int type = byteArray.at(0);
+    if (type < 0 || type > 4)
+    {
+        qDebug() << "Invalid QMimeType.";
+        return toReturn;
+    }
+
+    toReturn->setData(QMimeTypeFormat((QMimeType)type), byteArray.mid(1));
+    return toReturn;
 }

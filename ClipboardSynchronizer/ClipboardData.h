@@ -3,18 +3,11 @@
 
 #include <QMimeData>
 #include <QByteArray>
+#include <QDebug>
 
 #include "QMimeType.h"
 
-class ClipboardData
-{
-public:
-    ClipboardData(const QMimeData *mimeData);
-
-    QByteArray rawData() const;
-
-private:
-    QByteArray m_rawData;
-};
+QByteArray MimeDataToRawData(const QMimeData *mimeData);
+QMimeData* RawDataToMimeData(const QByteArray &byteArray);
 
 #endif // CLIPBOARDDATA_H
